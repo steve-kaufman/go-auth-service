@@ -15,33 +15,35 @@ var ErrInvalidJSON = fmt.Errorf("invalid JSON")
 var ErrNeedsUsername = fmt.Errorf("username is required")
 var ErrNeedsPassword = fmt.Errorf("password is required")
 
-var errCodesAndMessages = map[error]struct {
-	code int
-	msg  string
-}{
+type ErrorResponse struct {
+	statusCode int
+	msg        string
+}
+
+var errorResponses = map[error]ErrorResponse{
 	usecases.ErrInternal: {
-		code: 500,
-		msg:  "Internal error",
+		statusCode: 500,
+		msg:        "Internal error",
 	},
 	usecases.ErrNotFound: {
-		code: 404,
-		msg:  "User '%s' does not exist",
+		statusCode: 404,
+		msg:        "User '%s' does not exist",
 	},
 	usecases.ErrBadPassword: {
-		code: 400,
-		msg:  "Incorrect password",
+		statusCode: 400,
+		msg:        "Incorrect password",
 	},
 	ErrNeedsUsername: {
-		code: 400,
-		msg:  "Username is required",
+		statusCode: 400,
+		msg:        "Username is required",
 	},
 	ErrNeedsPassword: {
-		code: 400,
-		msg:  "Password is required",
+		statusCode: 400,
+		msg:        "Password is required",
 	},
 	ErrInvalidJSON: {
-		code: 400,
-		msg:  "Invalid JSON",
+		statusCode: 400,
+		msg:        "Invalid JSON",
 	},
 }
 
@@ -121,12 +123,12 @@ func tryLogin(
 }
 
 func sendError(w http.ResponseWriter, err error, a ...interface{}) {
-	errInfo, ok := errCodesAndMessages[err]
+	response, ok := errorResponses[err]
 	if !ok {
 		w.WriteHeader(500)
 		fmt.Fprint(w, "Unexpected internal error")
 		return
 	}
-	w.WriteHeader(errInfo.code)
-	fmt.Fprintf(w, errInfo.msg, a...)
+	w.WriteHeader(response.statusCode)
+	fmt.Fprintf(w, response.msg, a...)
 }

@@ -54,7 +54,7 @@ func verifyPassword(
 func generateTokens(
 	tokenGenerator interfaces.TokenGenerator, user entities.User,
 ) (entities.LoginTokens, error) {
-	tokens, err := tokenGenerator.GenerateTokens(user.ID, user.Username)
+	tokens, err := tokenGenerator.GetTokens(user.ID, user.Username)
 	if err != nil {
 		return entities.LoginTokens{}, ErrInternal
 	}

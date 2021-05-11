@@ -69,7 +69,7 @@ func (BadPasswordMatcher) MatchPassword(
 
 type MockTokenGenerator struct{}
 
-func (MockTokenGenerator) GenerateTokens(
+func (MockTokenGenerator) GetTokens(
 	userID int, username string,
 ) (entities.LoginTokens, error) {
 	return entities.LoginTokens{
@@ -80,7 +80,7 @@ func (MockTokenGenerator) GenerateTokens(
 
 type BadTokenGenerator struct{}
 
-func (BadTokenGenerator) GenerateTokens(
+func (BadTokenGenerator) GetTokens(
 	userID int, username string,
 ) (entities.LoginTokens, error) {
 	return entities.LoginTokens{}, errors.New("foobar")
